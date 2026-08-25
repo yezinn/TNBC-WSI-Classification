@@ -142,11 +142,6 @@ This project (WSI-based)
   Patch embeddings → CLAM gated-attention MIL
   → TNBC vs. non-TNBC classification
   → Test AUC 0.9115
-          ↓ planned next
-Multimodal extension
-  WSI slide embeddings + ssGSEA pathway vectors, combined
-  → pCR vs. RD prediction (PROACTING dataset)
-  → integrating morphological + molecular information
 ```
 
 ---
@@ -160,8 +155,6 @@ Multimodal extension
 | CLAM training (local, AUC 0.8420) | ✅ Done |
 | Attention heatmap visualization | ✅ Done |
 | 5-fold cross-validation | 🧪 Code added (`2_classification` cell 8) — not yet run |
-| Multimodal extension (WSI + ssGSEA) | 🔄 Planned |
-| pCR vs. RD task (PROACTING dataset) | 🔄 Planned |
 
 ---
 
