@@ -1,0 +1,2 @@
+best_epoch,val_auc,val_bal_acc,val_f1,test_auc,test_bal_acc,test_f1,n_test,n_tnbc_test,n_nontnbc_test
+5,0.8456,0.8199,0.7647,0.8767,0.7309,0.6452,50,18,32
