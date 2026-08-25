@@ -64,6 +64,7 @@ The reported results were produced on a cloud T4 GPU and, separately, on a local
 | Instance loss | Pseudo-labels auto-generated from attention-ranked top-k / bottom-k patches |
 | Hyperparameters | LR = 2e-4, weight decay = 1e-5, bag loss weight = 0.7, 30 epochs |
 | Scheduler | CosineAnnealingLR (T4 GPU run) / ReduceLROnPlateau (local run) |
+| Cross-validation | Optional 5-fold stratified CV over the full 330-patient cohort, reusing the same model/training code (see cell 8 in the notebook) |
 
 ---
 
@@ -158,7 +159,7 @@ Multimodal extension
 | CLAM training (T4 GPU, AUC 0.9115) | ✅ Done |
 | CLAM training (local, AUC 0.8420) | ✅ Done |
 | Attention heatmap visualization | ✅ Done |
-| 5-fold cross-validation | 🔄 Planned |
+| 5-fold cross-validation | 🧪 Code added (`2_classification` cell 8) — not yet run |
 | Multimodal extension (WSI + ssGSEA) | 🔄 Planned |
 | pCR vs. RD task (PROACTING dataset) | 🔄 Planned |
 
