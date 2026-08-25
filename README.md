@@ -40,7 +40,7 @@ All data used is from TCGA-BRCA's open-access tier (no protected health informat
 
 ## 1. Feature extraction — `1_feature_extraction/TNBCslide_usingUNImodel.ipynb`
 
-Run on Google Colab (T4 GPU).
+The reported results were produced on Google Colab (T4 GPU). The notebook has since been converted to run as a plain local Jupyter notebook (no Colab or Google Drive dependency) — see "Running this project" below.
 
 | Item | Detail |
 |---|---|
@@ -52,11 +52,9 @@ Run on Google Colab (T4 GPU).
 | Output | one `.pt` file per slide: `features` (n_patches × 1024), `coords`, `label`, `slide_size` |
 | Result | 330 `.pt` files, avg. 5,577 patches/slide, avg. slide size 95,044 × 45,112 px |
 
-> **Note:** the Hugging Face token required to load UNI is read via Colab Secrets / an interactive prompt at runtime — it is intentionally **not** stored in this notebook. See "Running this project" below.
-
 ## 2. Classification — `2_classification/CLAMLearning_edit.ipynb`
 
-Run on Google Colab (T4 GPU); a local Apple Silicon (MPS) run was also performed for comparison.
+The reported results were produced on Google Colab (T4 GPU) and, separately, on a local Apple Silicon (MPS) machine for comparison. Like the feature-extraction notebook, this one now runs locally with no Colab dependency.
 
 | Item | Detail |
 |---|---|
@@ -122,10 +120,10 @@ The gap between the two runs is attributable to CUDA vs. MPS RNG differences, mi
 
 | Stage | Environment |
 |---|---|
-| Feature extraction | Google Colab, T4 GPU |
-| Classification (best result) | Google Colab, T4 GPU |
-| Classification (local) | Apple M-series MacBook, MPS backend, macOS |
-| Local setup | Python 3.10, Miniforge, conda env `clam` |
+| Feature extraction (reported results) | Google Colab, T4 GPU |
+| Classification (best reported result) | Google Colab, T4 GPU |
+| Classification (local comparison run) | Apple M-series MacBook, MPS backend, macOS |
+| Notebooks in this repo | Local-only — no Colab / Google Drive dependency; run directly with Jupyter (Python 3.10, Miniforge, conda env `clam`) |
 
 ---
 
@@ -168,13 +166,12 @@ Multimodal extension
 
 ## Running this project
 
-1. Clone this repo and install dependencies per the upstream CLAM instructions (`env.yml`, `docs/INSTALLATION.md`).
-2. Open `1_feature_extraction/TNBCslide_usingUNImodel.ipynb` in Google Colab. When prompted for a Hugging Face token (required for `MahmoodLab/UNI`, request access [here](https://huggingface.co/MahmoodLab/UNI)), either:
-   - add it to Colab Secrets (🔑 icon in the left sidebar) under the name `HF_TOKEN`, or
-   - enter it interactively when prompted — it is never written to the notebook file.
-3. Run `2_classification/CLAMLearning_edit.ipynb` on the `.pt` feature files produced in step 2.
+1. Clone this repo and install dependencies per the upstream CLAM instructions (`env.yml`, `docs/INSTALLATION.md`), plus each notebook's own setup cell (`openslide-python`, `timm`, `huggingface_hub`, etc.). Install the OpenSlide system package first — `brew install openslide` (macOS) or `sudo apt-get install -y openslide-tools libgl1` (Ubuntu).
+2. Run `1_feature_extraction/TNBCslide_usingUNImodel.ipynb` locally with Jupyter, from inside this repo. When prompted for a Hugging Face token (required for `MahmoodLab/UNI` — request access [here](https://huggingface.co/MahmoodLab/UNI)), either set the `HF_TOKEN` environment variable beforehand, or enter it interactively when prompted; it is never written to the notebook file.
+3. Feature files and logs are written under `~/TCGA_BRCA_project` by default. Override this with the `TNBC_PROJECT_ROOT` environment variable (and `TNBC_WORK_DIR` for the temporary slide-download directory) to use a different location.
+4. Run `2_classification/CLAMLearning_edit.ipynb` on the `.pt` feature files produced in steps 2–3.
 
-**Do not commit a Hugging Face token, Google Drive path containing personal identifiers, or any other credential to this repository.**
+**Do not commit a Hugging Face token or any other credential to this repository.**
 
 ---
 
