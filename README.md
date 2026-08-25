@@ -2,7 +2,7 @@
 
 A portfolio project that classifies triple-negative breast cancer (TNBC) vs. non-TNBC directly from H&E-stained whole-slide images (WSIs), using a pathology foundation model for patch-level feature extraction and weakly-supervised multiple instance learning (MIL) for slide-level classification.
 
-**Test AUC: 0.9115** (CLAM-SB, Google Colab T4)
+**Test AUC: 0.9115** (CLAM-SB, T4 GPU)
 
 This repository is built on top of the official [CLAM](https://github.com/mahmoodlab/CLAM) implementation (Lu et al., *Nature Biomedical Engineering*, 2021) and is distributed under the same GPL-3.0 license (see `LICENSE.md`). The original CLAM codebase (`models/`, `wsi_core/`, `main.py`, `create_patches_fp.py`, etc.) is unmodified; this project's original contributions are the two notebooks under `1_feature_extraction/` and `2_classification/`.
 
@@ -40,7 +40,7 @@ All data used is from TCGA-BRCA's open-access tier (no protected health informat
 
 ## 1. Feature extraction — `1_feature_extraction/TNBCslide_usingUNImodel.ipynb`
 
-The reported results were produced on Google Colab (T4 GPU). The notebook has since been converted to run as a plain local Jupyter notebook (no Colab or Google Drive dependency) — see "Running this project" below.
+The reported results were produced on a cloud T4 GPU. The notebook runs as a plain local Jupyter notebook — see "Running this project" below.
 
 | Item | Detail |
 |---|---|
@@ -54,7 +54,7 @@ The reported results were produced on Google Colab (T4 GPU). The notebook has si
 
 ## 2. Classification — `2_classification/CLAMLearning_edit.ipynb`
 
-The reported results were produced on Google Colab (T4 GPU) and, separately, on a local Apple Silicon (MPS) machine for comparison. Like the feature-extraction notebook, this one now runs locally with no Colab dependency.
+The reported results were produced on a cloud T4 GPU and, separately, on a local Apple Silicon (MPS) machine for comparison. This notebook runs locally with Jupyter.
 
 | Item | Detail |
 |---|---|
@@ -63,13 +63,13 @@ The reported results were produced on Google Colab (T4 GPU) and, separately, on 
 | Loss | Weighted cross-entropy (TNBC class weight ≈ 1.84) + instance-level auxiliary loss |
 | Instance loss | Pseudo-labels auto-generated from attention-ranked top-k / bottom-k patches |
 | Hyperparameters | LR = 2e-4, weight decay = 1e-5, bag loss weight = 0.7, 30 epochs |
-| Scheduler | CosineAnnealingLR (Colab) / ReduceLROnPlateau (local) |
+| Scheduler | CosineAnnealingLR (T4 GPU run) / ReduceLROnPlateau (local run) |
 
 ---
 
 ## Results
 
-| Metric | Colab (best) | Local (Apple M-series, MPS) |
+| Metric | T4 GPU (best) | Local (Apple M-series, MPS) |
 |---|---|---|
 | Test AUC | **0.9115** | 0.8420 |
 | Balanced Accuracy | 0.8108 | — |
@@ -86,8 +86,8 @@ The gap between the two runs is attributable to CUDA vs. MPS RNG differences, mi
 - non-TNBC slides: attention is more diffusely spread across the slide.
 - Of 4 example TNBC slides, 3 were correctly classified (predicted TNBC probability 0.854–0.994); 1 was misclassified (0.007).
 
-![Confusion matrix (Colab)](assets/confusion_matrix.png)
-![Training curves (Colab)](assets/training_curves.png)
+![Confusion matrix (T4 GPU run)](assets/confusion_matrix.png)
+![Training curves (T4 GPU run)](assets/training_curves.png)
 
 ---
 
@@ -120,10 +120,10 @@ The gap between the two runs is attributable to CUDA vs. MPS RNG differences, mi
 
 | Stage | Environment |
 |---|---|
-| Feature extraction (reported results) | Google Colab, T4 GPU |
-| Classification (best reported result) | Google Colab, T4 GPU |
+| Feature extraction (reported results) | Cloud, T4 GPU |
+| Classification (best reported result) | Cloud, T4 GPU |
 | Classification (local comparison run) | Apple M-series MacBook, MPS backend, macOS |
-| Notebooks in this repo | Local-only — no Colab / Google Drive dependency; run directly with Jupyter (Python 3.10, Miniforge, conda env `clam`) |
+| Notebooks in this repo | Local Jupyter (Python 3.10, Miniforge, conda env `clam`) |
 
 ---
 
@@ -155,7 +155,7 @@ Multimodal extension
 | Item | Status |
 |---|---|
 | UNI feature extraction (330 patients) | ✅ Done |
-| CLAM training (Colab, AUC 0.9115) | ✅ Done |
+| CLAM training (T4 GPU, AUC 0.9115) | ✅ Done |
 | CLAM training (local, AUC 0.8420) | ✅ Done |
 | Attention heatmap visualization | ✅ Done |
 | 5-fold cross-validation | 🔄 Planned |
