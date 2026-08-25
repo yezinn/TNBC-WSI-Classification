@@ -6,13 +6,6 @@ A portfolio project that classifies triple-negative breast cancer (TNBC) vs. non
 
 This repository is built on top of the official [CLAM](https://github.com/mahmoodlab/CLAM) implementation (Lu et al., *Nature Biomedical Engineering*, 2021) and is distributed under the same GPL-3.0 license (see `LICENSE.md`). The original CLAM codebase (`models/`, `wsi_core/`, `main.py`, `create_patches_fp.py`, etc.) is unmodified; this project's original contributions are the two notebooks under `1_feature_extraction/` and `2_classification/`.
 
----
-
-## Motivation
-
-During my Master's research at KAIST, I predicted TNBC patients' response to neoadjuvant chemotherapy (NAC) from transcriptomic data using transfer learning (TRANSACT + ssGSEA), improving specificity by 23 percentage points over baseline. That work relied on transcriptomic data alone and lacked any pathological/morphological signal.
-
-An interview for a computational pathology internship at LG AI Research surfaced this gap directly — a lack of whole-slide image (WSI) and multimodal experience. This project was built to close that gap: a pathology foundation model (UNI) combined with weakly-supervised MIL (CLAM) to classify TNBC directly from H&E slides, with no transcriptomic input.
 
 ---
 
