@@ -52,7 +52,7 @@ The reported results were produced on a cloud T4 GPU. The notebook runs as a pla
 | Output | one `.pt` file per slide: `features` (n_patches × 1024), `coords`, `label`, `slide_size` |
 | Result | 330 `.pt` files, avg. 5,577 patches/slide, avg. slide size 95,044 × 45,112 px |
 
-## 2. Classification — `2_classification/CLAMLearning_edit.ipynb`
+## 2. Classification — `2_classification/CLAMLearning.ipynb`
 
 The reported results were produced on a cloud T4 GPU and, separately, on a local Apple Silicon (MPS) machine for comparison. This notebook runs locally with Jupyter.
 
@@ -72,12 +72,12 @@ The reported results were produced on a cloud T4 GPU and, separately, on a local
 
 | Metric | T4 GPU (best) | Local (Apple M-series, MPS) |
 |---|---|---|
-| Test AUC | **0.9115** | 0.8420 |
-| Balanced Accuracy | 0.8108 | — |
-| F1 Score | 0.7568 | — |
-| Best Val AUC | — | 0.8511 |
+| Test AUC | **0.9115** | 0.8767 |
+| Balanced Accuracy | 0.8108 | 0.7309 |
+| F1 Score | 0.7568 | 0.6452 |
+| Best Val AUC | — | 0.8456 |
 
-The gap between the two runs is attributable to CUDA vs. MPS RNG differences, minor config differences between the two notebook versions (e.g., weighted loss, LR scheduler), and split variance on a relatively small cohort (n=330).
+The gap between the two runs is attributable to CUDA vs. MPS RNG differences and split variance on a relatively small cohort (n=330; local test set n=50, 18 TNBC / 32 non-TNBC).
 
 ### Attention heatmaps
 
@@ -89,6 +89,24 @@ The gap between the two runs is attributable to CUDA vs. MPS RNG differences, mi
 
 ![Confusion matrix (T4 GPU run)](assets/confusion_matrix.png)
 ![Training curves (T4 GPU run)](assets/training_curves.png)
+![Confusion matrix (local run)](assets/confusion_matrix_local_v2.png)
+
+### 5-fold cross-validation
+
+Stratified 5-fold CV over the full 330-patient cohort, reusing the same model/training code as the main run (`2_classification/CLAMLearning.ipynb`, cell 8).
+
+| Fold | Val AUC | Val Balanced Acc. | Val F1 |
+|---|---|---|---|
+| 1 | 0.9335 | 0.8899 | 0.8571 |
+| 2 | 0.8625 | 0.8231 | 0.7727 |
+| 3 | 0.8817 | 0.7376 | 0.6486 |
+| 4 | 0.9272 | 0.8751 | 0.8235 |
+| 5 | 0.8979 | 0.6608 | 0.5143 |
+| **Mean ± SD** | **0.9006 ± 0.0300** | 0.7973 ± 0.0968 | 0.7232 ± 0.1411 |
+
+![5-fold CV AUC](assets/cv_5fold_auc.png)
+
+AUC is stable across folds (0.86–0.93). Balanced accuracy and F1 vary more (fold 5 in particular), suggesting the fold-to-fold split has some effect on the decision threshold at this cohort size (n=330).
 
 ---
 
@@ -152,9 +170,9 @@ This project (WSI-based)
 |---|---|
 | UNI feature extraction (330 patients) | ✅ Done |
 | CLAM training (T4 GPU, AUC 0.9115) | ✅ Done |
-| CLAM training (local, AUC 0.8420) | ✅ Done |
+| CLAM training (local, AUC 0.8767) | ✅ Done |
 | Attention heatmap visualization | ✅ Done |
-| 5-fold cross-validation | 🧪 Code added (`2_classification` cell 8) — not yet run |
+| 5-fold cross-validation | ✅ Done (mean AUC 0.9006 ± 0.0300 across 5 folds) |
 
 ---
 
@@ -163,7 +181,7 @@ This project (WSI-based)
 1. Clone this repo and install dependencies per the upstream CLAM instructions (`env.yml`, `docs/INSTALLATION.md`), plus each notebook's own setup cell (`openslide-python`, `timm`, `huggingface_hub`, etc.). Install the OpenSlide system package first — `brew install openslide` (macOS) or `sudo apt-get install -y openslide-tools libgl1` (Ubuntu).
 2. Run `1_feature_extraction/TNBCslide_usingUNImodel.ipynb` locally with Jupyter, from inside this repo. When prompted for a Hugging Face token (required for `MahmoodLab/UNI` — request access [here](https://huggingface.co/MahmoodLab/UNI)), either set the `HF_TOKEN` environment variable beforehand, or enter it interactively when prompted; it is never written to the notebook file.
 3. Feature files and logs are written under `~/TCGA_BRCA_project` by default. Override this with the `TNBC_PROJECT_ROOT` environment variable (and `TNBC_WORK_DIR` for the temporary slide-download directory) to use a different location.
-4. Run `2_classification/CLAMLearning_edit.ipynb` on the `.pt` feature files produced in steps 2–3.
+4. Run `2_classification/CLAMLearning.ipynb` on the `.pt` feature files produced in steps 2–3.
 
 **Do not commit a Hugging Face token or any other credential to this repository.**
 
